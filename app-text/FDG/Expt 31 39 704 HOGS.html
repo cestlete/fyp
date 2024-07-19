@@ -1,0 +1,170 @@
+<html>
+    <head>
+        <meta charset="utf-8">
+        
+            <script src="lib/bindings/utils.js"></script>
+            <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/dist/vis-network.min.css" integrity="sha512-WgxfT5LWjfszlPHXRmBWHkV2eceiWTOBvrKCNbdgDYTHrT2AeLCGbF4sZlZw3UMN3WtL0tGUoIAKsu8mllg/XA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+            <script src="https://cdnjs.cloudflare.com/ajax/libs/vis-network/9.1.2/dist/vis-network.min.js" integrity="sha512-LnvoEWDFrqGHlHmDD2101OrLcbsfkrzoSpvtSQtxK3RMnRV0eOkhhBN2dXHKRrUU8p2DGRTk35n4O8nWSVe1mQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+            
+        
+<center>
+<h1></h1>
+</center>
+
+<!-- <link rel="stylesheet" href="../node_modules/vis/dist/vis.min.css" type="text/css" />
+<script type="text/javascript" src="../node_modules/vis/dist/vis.js"> </script>-->
+        <link
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/css/bootstrap.min.css"
+          rel="stylesheet"
+          integrity="sha384-eOJMYsd53ii+scO/bJGFsiCZc+5NDVN2yr8+0RDqr0Ql0h+rP48ckxlpbzKgwra6"
+          crossorigin="anonymous"
+        />
+        <script
+          src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta3/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-JEW9xMcG8R+pH31jmWH6WWP0WintQrMb4s7ZOdauHnUtxwoG2vI5DkLtS3qm9Ekf"
+          crossorigin="anonymous"
+        ></script>
+
+
+        <center>
+          <h1></h1>
+        </center>
+        <style type="text/css">
+
+             #mynetwork {
+                 width: 100%;
+                 height: 1200px;
+                 background-color: #ffffff;
+                 border: 1px solid lightgray;
+                 position: relative;
+                 float: left;
+             }
+
+             
+
+             
+             #config {
+                 float: left;
+                 width: 400px;
+                 height: 600px;
+             }
+             
+
+             
+        </style>
+    </head>
+
+
+    <body>
+        <div class="card" style="width: 100%">
+            
+            
+            <div id="mynetwork" class="card-body"></div>
+        </div>
+
+        
+        
+            <div id="config"></div>
+        
+
+        <script type="text/javascript">
+
+              // initialize global variables.
+              var edges;
+              var nodes;
+              var allNodes;
+              var allEdges;
+              var nodeColors;
+              var originalNodes;
+              var network;
+              var container;
+              var options, data;
+              var filter = {
+                  item : '',
+                  property : '',
+                  value : []
+              };
+
+              
+
+              
+
+              // This method is responsible for drawing the graph, returns the drawn network
+              function drawGraph() {
+                  var container = document.getElementById('mynetwork');
+
+                  
+
+                  // parsing and collecting nodes and edges from the python
+                  nodes = new vis.DataSet([{"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "rays - general", "label": "rays - general", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "tumor - small groups", "label": "tumor - small groups", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "way to tumor - mines", "label": "way to tumor - mines", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "way - to prevent on roads from destroying", "label": "way - to prevent on roads from destroying", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "At intensities harmless to tissue - prevent", "label": "At intensities harmless to tissue - prevent", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "At lower intensities harmless to healthy tissue - his army", "label": "At lower intensities harmless to healthy tissue - his army", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "harmless - roads from destroying", "label": "harmless - roads from destroying", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "lower intensities - prevent on roads from destroying", "label": "lower intensities - prevent on roads from destroying", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "intensities - fortress", "label": "intensities - fortress", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "At lower intensities harmless to tissue - to prevent", "label": "At lower intensities harmless to tissue - to prevent", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "At intensities harmless to healthy tissue - several small groups", "label": "At intensities harmless to healthy tissue - several small groups", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "tissue - groups", "label": "tissue - groups", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "healthy tissue - army", "label": "healthy tissue - army", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "will destroyed - However needed", "label": "will destroyed - However needed", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "Unfortunately will also destroyed - needed", "label": "Unfortunately will also destroyed - needed", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "you - He", "label": "you - He", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "doctor faced - heads", "label": "doctor faced - heads", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "doctor - heads of different roads", "label": "doctor - heads of different roads", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "blue", "borderWidth": 1, "color": "#97c2fc", "edgecolor": "lightblue", "id": "faced - heads of roads", "label": "faced - heads of roads", "labelHighlightBold": true, "shape": "dot", "size": 5}, {"border": "pink", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "you", "label": "you", "labelHighlightBold": true, "shape": "dot", "size": 9}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "doctor faced with patient", "label": "doctor faced with patient", "labelHighlightBold": true, "shape": "dot", "size": 6}, {"border": "pink", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "It", "label": "It", "labelHighlightBold": true, "shape": "dot", "size": 6}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "patient", "label": "patient", "labelHighlightBold": true, "shape": "dot", "size": 6}, {"border": "pink", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "tumor", "label": "tumor", "labelHighlightBold": true, "shape": "dot", "size": 12}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "will destroyed", "label": "will destroyed", "labelHighlightBold": true, "shape": "dot", "size": 8}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "time", "label": "time", "labelHighlightBold": true, "shape": "dot", "size": 6}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "same time", "label": "same time", "labelHighlightBold": true, "shape": "dot", "size": 6}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "destroying", "label": "destroying", "labelHighlightBold": true, "shape": "dot", "size": 6}, {"border": "pink", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "rays", "label": "rays", "labelHighlightBold": true, "shape": "dot", "size": 19}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "healthy tissue", "label": "healthy tissue", "labelHighlightBold": true, "shape": "dot", "size": 14}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "Unfortunately will destroyed", "label": "Unfortunately will destroyed", "labelHighlightBold": true, "shape": "dot", "size": 7}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "Unfortunately at intensity will also destroyed", "label": "Unfortunately at intensity will also destroyed", "labelHighlightBold": true, "shape": "dot", "size": 7}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "Unfortunately at intensity will destroyed", "label": "Unfortunately at intensity will destroyed", "labelHighlightBold": true, "shape": "dot", "size": 7}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "will also destroyed", "label": "will also destroyed", "labelHighlightBold": true, "shape": "dot", "size": 7}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "at intensity will also destroyed", "label": "at intensity will also destroyed", "labelHighlightBold": true, "shape": "dot", "size": 7}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "at intensity will destroyed", "label": "at intensity will destroyed", "labelHighlightBold": true, "shape": "dot", "size": 7}, {"border": "pink", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "tissue", "label": "tissue", "labelHighlightBold": true, "shape": "dot", "size": 14}, {"border": "red", "borderWidth": 1, "color": "pink", "edgecolor": "red", "id": "Unfortunately will also destroyed", "label": "Unfortunately will also destroyed", "labelHighlightBold": true, "shape": "dot", "size": 7}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "fortress", "label": "fortress", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "located", "label": "located", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "center", "label": "center", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "center of country", "label": "center of country", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "Many roads", "label": "Many roads", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "roads", "label": "roads", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "general", "label": "general", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "his army", "label": "his army", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "roads from destroying", "label": "roads from destroying", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "several small groups", "label": "several small groups", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "groups", "label": "groups", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "several groups", "label": "several groups", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "entire army", "label": "entire army", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "However needed", "label": "However needed", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "needed", "label": "needed", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "army", "label": "army", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "way", "label": "way", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "small groups", "label": "small groups", "labelHighlightBold": true, "shape": "dot", "size": 10}, {"border": "green", "borderWidth": 1, "color": "lightgreen", "edgecolor": "green", "id": "He", "label": "He", "labelHighlightBold": true, "shape": "dot", "size": 10}]);
+                  edges = new vis.DataSet([{"arrows": "to", "color": "lightblue", "from": "rays - general", "label": "reach once - divided into", "to": "tumor - small groups"}, {"arrows": "to", "color": "lightblue", "from": "rays - general", "label": "reach all once - therefore divided into", "to": "tumor - small groups"}, {"arrows": "to", "color": "lightblue", "from": "rays - general", "label": "pass through on - prevent", "to": "way to tumor - mines"}, {"arrows": "to", "color": "lightblue", "from": "rays - general", "label": "pass through on - wanted", "to": "way - to prevent on roads from destroying"}, {"arrows": "to", "color": "lightblue", "from": "rays - general", "label": "are - wanted", "to": "At intensities harmless to tissue - prevent"}, {"arrows": "to", "color": "lightblue", "from": "rays - general", "label": "are - capture fortress with", "to": "At lower intensities harmless to healthy tissue - his army"}, {"arrows": "to", "color": "lightblue", "from": "rays - general", "label": "are - prevent mines on", "to": "harmless - roads from destroying"}, {"arrows": "to", "color": "lightblue", "from": "rays - general", "label": "are harmless At - wanted", "to": "lower intensities - prevent on roads from destroying"}, {"arrows": "to", "color": "lightblue", "from": "rays - general", "label": "are harmless At - capture", "to": "intensities - fortress"}, {"arrows": "to", "color": "lightblue", "from": "rays - general", "label": "are - wanted", "to": "At lower intensities harmless to tissue - to prevent"}, {"arrows": "to", "color": "lightblue", "from": "rays - general", "label": "are - divided into", "to": "At intensities harmless to healthy tissue - several small groups"}, {"arrows": "to", "color": "lightblue", "from": "rays - general", "label": "are harmless to - divided into", "to": "tissue - groups"}, {"arrows": "to", "color": "lightblue", "from": "healthy tissue - army", "label": "will - was", "to": "will destroyed - However needed"}, {"arrows": "to", "color": "lightblue", "from": "healthy tissue - army", "label": "will - was", "to": "Unfortunately will also destroyed - needed"}, {"arrows": "to", "color": "lightblue", "from": "you - He", "label": "are - positioned groups at", "to": "doctor faced - heads"}, {"arrows": "to", "color": "lightblue", "from": "you - He", "label": "are - positioned groups at", "to": "doctor - heads of different roads"}, {"arrows": "to", "color": "lightblue", "from": "you - He", "label": "are - positioned groups at", "to": "faced - heads of roads"}, {"arrows": "to", "color": "pink", "from": "you", "label": "are", "to": "doctor faced with patient"}, {"arrows": "to", "color": "pink", "from": "It", "label": "operate on", "to": "patient"}, {"arrows": "to", "color": "pink", "from": "tumor", "label": "will", "to": "will destroyed"}, {"arrows": "to", "color": "pink", "from": "tumor", "label": "avoid at", "to": "time"}, {"arrows": "to", "color": "pink", "from": "tumor", "label": "avoid at", "to": "same time"}, {"arrows": "to", "color": "pink", "from": "tumor", "label": "avoid", "to": "destroying"}, {"arrows": "to", "color": "pink", "from": "rays", "label": "reach", "to": "tumor"}, {"arrows": "to", "color": "pink", "from": "rays", "label": "are harmless to", "to": "healthy tissue"}, {"arrows": "to", "color": "pink", "from": "healthy tissue", "label": "will", "to": "Unfortunately will destroyed"}, {"arrows": "to", "color": "pink", "from": "healthy tissue", "label": "will", "to": "Unfortunately at intensity will also destroyed"}, {"arrows": "to", "color": "pink", "from": "healthy tissue", "label": "will", "to": "Unfortunately at intensity will destroyed"}, {"arrows": "to", "color": "pink", "from": "healthy tissue", "label": "will", "to": "will also destroyed"}, {"arrows": "to", "color": "pink", "from": "healthy tissue", "label": "will", "to": "at intensity will also destroyed"}, {"arrows": "to", "color": "pink", "from": "healthy tissue", "label": "will", "to": "at intensity will destroyed"}, {"arrows": "to", "color": "pink", "from": "tissue", "label": "will", "to": "Unfortunately will also destroyed"}, {"arrows": "to", "color": "pink", "from": "tissue", "label": "will", "to": "Unfortunately at intensity will also destroyed"}, {"arrows": "to", "color": "pink", "from": "tissue", "label": "will", "to": "will also destroyed"}, {"arrows": "to", "color": "pink", "from": "tissue", "label": "will", "to": "Unfortunately at intensity will destroyed"}, {"arrows": "to", "color": "pink", "from": "tissue", "label": "will", "to": "will destroyed"}, {"arrows": "to", "color": "pink", "from": "tissue", "label": "will", "to": "at intensity will destroyed"}, {"arrows": "to", "color": "pink", "from": "tissue", "label": "will", "to": "Unfortunately will destroyed"}, {"arrows": "to", "color": "pink", "from": "tissue", "label": "will", "to": "at intensity will also destroyed"}, {"arrows": "to", "color": "lightgreen", "from": "fortress", "label": "was", "to": "located"}, {"arrows": "to", "color": "lightgreen", "from": "fortress", "label": "was located in", "to": "center"}, {"arrows": "to", "color": "lightgreen", "from": "fortress", "label": "was located in", "to": "center of country"}, {"arrows": "to", "color": "lightgreen", "from": "Many roads", "label": "radiated out from", "to": "fortress"}, {"arrows": "to", "color": "lightgreen", "from": "roads", "label": "radiated out from", "to": "fortress"}, {"arrows": "to", "color": "lightgreen", "from": "general", "label": "therefore divided", "to": "his army"}, {"arrows": "to", "color": "lightgreen", "from": "general", "label": "divided", "to": "his army"}, {"arrows": "to", "color": "lightgreen", "from": "general", "label": "prevent on", "to": "roads from destroying"}, {"arrows": "to", "color": "lightgreen", "from": "general", "label": "therefore divided into", "to": "several small groups"}, {"arrows": "to", "color": "lightgreen", "from": "general", "label": "therefore divided into", "to": "groups"}, {"arrows": "to", "color": "lightgreen", "from": "general", "label": "divided into", "to": "several groups"}, {"arrows": "to", "color": "lightgreen", "from": "general", "label": "therefore divided into", "to": "several groups"}, {"arrows": "to", "color": "lightgreen", "from": "entire army", "label": "capture", "to": "fortress"}, {"arrows": "to", "color": "lightgreen", "from": "entire army", "label": "was", "to": "However needed"}, {"arrows": "to", "color": "lightgreen", "from": "entire army", "label": "was", "to": "needed"}, {"arrows": "to", "color": "lightgreen", "from": "army", "label": "capture", "to": "fortress"}, {"arrows": "to", "color": "lightgreen", "from": "army", "label": "captured", "to": "fortress"}, {"arrows": "to", "color": "lightgreen", "from": "army", "label": "captured In", "to": "way"}, {"arrows": "to", "color": "lightgreen", "from": "army", "label": "captured fortress In", "to": "way"}, {"arrows": "to", "color": "lightgreen", "from": "small groups", "label": "converged on", "to": "fortress"}, {"arrows": "to", "color": "lightgreen", "from": "small groups", "label": "simultaneously converged on", "to": "fortress"}, {"arrows": "to", "color": "lightgreen", "from": "groups", "label": "simultaneously converged on", "to": "fortress"}, {"arrows": "to", "color": "lightgreen", "from": "groups", "label": "converged on", "to": "fortress"}, {"arrows": "to", "color": "lightgreen", "from": "He", "label": "positioned", "to": "groups"}, {"arrows": "to", "color": "lightgreen", "from": "He", "label": "positioned", "to": "small groups"}]);
+
+                  nodeColors = {};
+                  allNodes = nodes.get({ returnType: "Object" });
+                  for (nodeId in allNodes) {
+                    nodeColors[nodeId] = allNodes[nodeId].color;
+                  }
+                  allEdges = edges.get({ returnType: "Object" });
+                  // adding nodes and edges to the graph
+                  data = {nodes: nodes, edges: edges};
+
+                  var options = {
+    "configure": {
+        "enabled": true,
+        "filter": [
+            "physics"
+        ]
+    },
+    "edges": {
+        "color": {
+            "inherit": true
+        },
+        "smooth": {
+            "enabled": true,
+            "type": "dynamic"
+        }
+    },
+    "interaction": {
+        "dragNodes": true,
+        "hideEdgesOnDrag": false,
+        "hideNodesOnDrag": false
+    },
+    "physics": {
+        "enabled": true,
+        "stabilization": {
+            "enabled": true,
+            "fit": true,
+            "iterations": 1000,
+            "onlyDynamicEdges": false,
+            "updateInterval": 50
+        }
+    }
+};
+
+                  
+
+
+                  
+                  // if this network requires displaying the configure window,
+                  // put it in its div
+                  options.configure["container"] = document.getElementById("config");
+                  
+
+                  network = new vis.Network(container, data, options);
+
+                  
+
+                  
+
+                  
+
+
+                  
+
+                  return network;
+
+              }
+              drawGraph();
+        </script>
+    </body>
+</html>
